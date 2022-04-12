@@ -4,10 +4,21 @@ import com.epam.esm.task.entity.Entity;
 
 public class Tag extends Entity {
 
+    private String name;
+
     public Tag(){}
 
     public Tag(long id, String name) {
-        super(id, name);
+        super(id);
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

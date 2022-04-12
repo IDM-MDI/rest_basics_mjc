@@ -5,9 +5,9 @@ CREATE DATABASE IF NOT EXISTS Gift_Certificates_Test;
 USE Gift_Certificates_Test;
 
 -- -----------------------------------------------------
--- Table Gift_Certificates_Test.tags
+-- Table Gift_Certificates_Test.tagDtos
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS tags
+CREATE TABLE IF NOT EXISTS tagDtos
 (
     id       BIGINT UNSIGNED AUTO_INCREMENT,
     name VARCHAR(42) NOT NULL,

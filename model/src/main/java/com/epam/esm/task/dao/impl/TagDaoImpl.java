@@ -3,6 +3,7 @@ package com.epam.esm.task.dao.impl;
 import com.epam.esm.task.builder.impl.TagBuilder;
 import com.epam.esm.task.dao.AbstractDao;
 import com.epam.esm.task.dao.EntityQuery;
+import com.epam.esm.task.dao.TagDao;
 import com.epam.esm.task.dao.mapper.TagMapper;
 import com.epam.esm.task.entity.impl.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class TagDao extends AbstractDao<Tag,Long> {
+public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
 
     private TagBuilder builder;
 
     @Autowired
-    public TagDao(JdbcTemplate jdbcTemplate,TagBuilder builder) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, TagBuilder builder) {
         super(jdbcTemplate);
         this.builder = builder;
     }
@@ -33,9 +34,6 @@ public class TagDao extends AbstractDao<Tag,Long> {
     }
 
     @Override
-    public void update(Tag entity) {}
-
-    @Override
     public void delete(Long id) {
         jdbcTemplate.update(EntityQuery.DELETE_TAG,id);
     }
@@ -43,5 +41,10 @@ public class TagDao extends AbstractDao<Tag,Long> {
     @Override
     public Tag findById(Long id) {
         return jdbcTemplate.queryForObject(EntityQuery.FIND_BY_ID_TAG,new TagMapper(builder),id);
+    }
+
+    @Override
+    public void createWithList(List<Tag> tagList) {
+        tagList.forEach(this::create);
     }
 }

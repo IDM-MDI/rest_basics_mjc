@@ -1,5 +1,5 @@
 -- Fill values to "Tag" table
-INSERT INTO tags (name)
+INSERT INTO tagDtos (name)
 VALUES ('tag1'),
 ('tag2'),
 ('tag3'),

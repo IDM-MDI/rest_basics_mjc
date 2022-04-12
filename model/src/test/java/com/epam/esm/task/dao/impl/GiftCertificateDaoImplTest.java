@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = SpringJdbcTestConfig.class)
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-class GiftCertificateDaoTest {
+class GiftCertificateDaoImplTest {
 
     @Test
     void create() {

@@ -1,6 +1,6 @@
 package com.epam.esm.task.service.impl;
 
-import com.epam.esm.task.dao.impl.TagDao;
+import com.epam.esm.task.dao.impl.TagDaoImpl;
 import com.epam.esm.task.entity.impl.Tag;
 import com.epam.esm.task.service.CustomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@ import java.util.List;
 @EnableTransactionManagement(proxyTargetClass = true)
 public class TagService implements CustomService<Tag,Long> {
 
-    private final TagDao dao;
+    private final TagDaoImpl dao;
 
     @Autowired
-    public TagService(TagDao dao) {
+    public TagService(TagDaoImpl dao) {
         this.dao = dao;
     }
 

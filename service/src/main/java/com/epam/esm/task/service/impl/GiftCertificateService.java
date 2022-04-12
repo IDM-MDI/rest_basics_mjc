@@ -1,6 +1,6 @@
 package com.epam.esm.task.service.impl;
 
-import com.epam.esm.task.dao.impl.GiftCertificateDao;
+import com.epam.esm.task.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.task.entity.impl.GiftCertificate;
 import com.epam.esm.task.service.CustomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@ import java.util.List;
 @EnableTransactionManagement(proxyTargetClass = true)
 public class GiftCertificateService implements CustomService<GiftCertificate,Long> {
 
-    private final GiftCertificateDao dao;
+    private final GiftCertificateDaoImpl dao;
 
     @Autowired
-    public GiftCertificateService(GiftCertificateDao dao) {
+    public GiftCertificateService(GiftCertificateDaoImpl dao) {
         this.dao = dao;
     }
 

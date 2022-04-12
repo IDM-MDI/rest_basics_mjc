@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public abstract class AbstractDao<T extends Entity, K> implements CrudDao<T,K>{
+public abstract class AbstractDao<T extends Entity, K>{
 
     protected final JdbcTemplate jdbcTemplate;
 
