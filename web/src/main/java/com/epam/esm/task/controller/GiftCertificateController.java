@@ -1,5 +1,6 @@
 package com.epam.esm.task.controller;
 
+import com.epam.esm.task.dto.impl.GiftCertificateDto;
 import com.epam.esm.task.entity.impl.GiftCertificate;
 import com.epam.esm.task.service.impl.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,12 @@ public class GiftCertificateController {
     }
 
     @GetMapping
-    public List<GiftCertificate> getGiftCertificate() {
+    public List<GiftCertificateDto> getGiftCertificate() {
         return service.findAll();
     }
 
     @PostMapping
-    public ResponseEntity addGiftCertificate(@RequestBody GiftCertificate entity) {
+    public ResponseEntity addGiftCertificate(@RequestBody GiftCertificateDto entity) {
         try{
             service.save(entity);
             return ResponseEntity.ok("Server is working");
@@ -45,11 +46,11 @@ public class GiftCertificateController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity updateGiftCertificate(@PathVariable("id") long id,
-                                                @RequestBody GiftCertificate entity) {
+                                                @RequestBody GiftCertificateDto entity) {
         try{
-            service.update(entity);
+            service.update(entity,id);
             return ResponseEntity.ok("Server is working");
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Server is not working 404 bad request");

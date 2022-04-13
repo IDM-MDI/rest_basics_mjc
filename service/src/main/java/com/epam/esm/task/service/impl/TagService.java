@@ -1,7 +1,7 @@
 package com.epam.esm.task.service.impl;
 
 import com.epam.esm.task.dao.impl.TagDaoImpl;
-import com.epam.esm.task.entity.impl.Tag;
+import com.epam.esm.task.dto.impl.TagDto;
 import com.epam.esm.task.service.CustomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @EnableTransactionManagement(proxyTargetClass = true)
-public class TagService implements CustomService<Tag,Long> {
+public class TagService implements CustomService<TagDto,Long> {
 
     private final TagDaoImpl dao;
 
@@ -21,8 +21,8 @@ public class TagService implements CustomService<Tag,Long> {
     }
 
     @Override
-    public void save(Tag entity) {
-        dao.create(entity);
+    public void save(TagDto dto) {
+        dao.create(TagDto.toEntity(dto));
     }
 
     @Override
@@ -31,15 +31,15 @@ public class TagService implements CustomService<Tag,Long> {
     }
 
     @Override
-    public void update(Tag entity) {}
+    public void update(TagDto dto, Long id) {}
 
     @Override
-    public List<Tag> findAll() {
-        return dao.read();
+    public List<TagDto> findAll() {
+        return TagDto.toDtoList(dao.read());
     }
 
     @Override
-    public Tag findById(Long id) {
-        return dao.findById(id);
+    public TagDto findById(Long id) {
+        return TagDto.toDto(dao.findById(id));
     }
 }

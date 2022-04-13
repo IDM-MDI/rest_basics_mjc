@@ -1,9 +1,11 @@
 package com.epam.esm.task.dao;
 
 import com.epam.esm.task.entity.Entity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 @Repository
 public abstract class AbstractDao<T extends Entity, K>{
@@ -15,4 +17,6 @@ public abstract class AbstractDao<T extends Entity, K>{
     }
 
     public abstract T findById(K id);
+    protected abstract void fillPreparedStatement(T entity,PreparedStatement statement) throws SQLException;
+    protected abstract long executeEntity(T entity,String query);
 }

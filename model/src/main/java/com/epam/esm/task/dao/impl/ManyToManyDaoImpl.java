@@ -1,7 +1,6 @@
 package com.epam.esm.task.dao.impl;
 
 import com.epam.esm.task.dao.AbstractDao;
-import com.epam.esm.task.dao.ColumnName;
 import com.epam.esm.task.dao.EntityQuery;
 import com.epam.esm.task.dao.ManyToManyDao;
 import com.epam.esm.task.dao.mapper.ManyToManyMapper;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -37,9 +38,9 @@ public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements M
     }
 
     @Override
-    public void create(long giftId, List<Tag> tagList) {
-        tagList.forEach((i)->{
-            jdbcTemplate.update(EntityQuery.INSERT_MTM,giftId,i.getId());
+    public void create(long giftId, List<Long> tagIdList) {
+        tagIdList.forEach((i)->{
+            jdbcTemplate.update(EntityQuery.INSERT_MTM,giftId,i);
         });
     }
 
@@ -58,5 +59,10 @@ public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements M
     @Override
     public void deleteByTagId(long id) {
         jdbcTemplate.update(EntityQuery.DELETE_BY_TAG_ID_MTM,id);
+    }
+
+    @Override
+    protected void fillPreparedStatement(ManyToMany entity, PreparedStatement statement) throws SQLException {
+
     }
 }

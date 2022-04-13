@@ -21,11 +21,27 @@ public class GiftCertificate extends Entity {
                            BigDecimal price, int duration,
                            LocalDateTime create_date, LocalDateTime update_date) {
         super(id);
+        this.name = name;
         this.description = description;
         this.price = price;
         this.duration = duration;
         this.create_date = create_date;
         this.update_date = update_date;
+    }
+
+    public GiftCertificate(long id,
+                           String name, String description,
+                           BigDecimal price, int duration,
+                           LocalDateTime create_date, LocalDateTime update_date,
+                           List<Tag> tagList) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.create_date = create_date;
+        this.update_date = update_date;
+        this.tagList = tagList;
     }
 
     public String getName() {
@@ -80,13 +96,10 @@ public class GiftCertificate extends Entity {
         return tagList;
     }
 
-    public void setTags(List<Tag> tagDtos) {
-        this.tagList = tagDtos;
+    public void setTags(List<Tag> tagList) {
+        this.tagList = tagList;
     }
 
-    public List<Tag> getTagList() {
-        return tagList;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

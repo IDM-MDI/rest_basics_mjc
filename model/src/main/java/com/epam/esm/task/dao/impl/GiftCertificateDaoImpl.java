@@ -9,9 +9,15 @@ import com.epam.esm.task.entity.impl.GiftCertificate;
 import com.epam.esm.task.entity.impl.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,22 +29,22 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
     private final ManyToManyDaoImpl mtmDao;
 
     @Autowired
-    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, GiftCertificateBuilder builder, TagDaoImpl tagDao, ManyToManyDaoImpl mtmDao) {
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
+                                  GiftCertificateBuilder builder,
+                                  TagDaoImpl tagDao,
+                                  ManyToManyDaoImpl mtmDao) {
         super(jdbcTemplate);
         this.builder = builder;
         this.tagDao = tagDao;
         this.mtmDao = mtmDao;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void create(GiftCertificate entity) {
-        jdbcTemplate.update(EntityQuery.INSERT_GIFT,
-                entity.getName(),entity.getDescription(),
-                entity.getPrice(),entity.getDuration(),
-                entity.getCreate_date(),entity.getUpdate_date());
-        mtmDao.create(entity.getId(),entity.getTagList());
-        tagDao.createWithList(entity.getTagList());
+    public long create(GiftCertificate entity) {
+        long giftId = executeEntity(entity,EntityQuery.INSERT_GIFT);
+        mtmDao.create(giftId,tagDao.createWithList(entity.getTags()));
+        return giftId;
     }
 
     @Transactional
@@ -60,19 +66,60 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void update(GiftCertificate entity) {
-        jdbcTemplate.update(EntityQuery.UPDATE_GIFT, entity.getId());
+    public void update(GiftCertificate entity, Long id) {
+        jdbcTemplate.update(EntityQuery.UPDATE_GIFT,
+                entity.getName(),entity.getDescription(),
+                entity.getPrice(),entity.getDuration(),
+                entity.getCreate_date(),entity.getUpdate_date(),
+                entity.getId());
+        mtmDao.deleteByGiftId(id);
+        mtmDao.create(id,tagDao.createWithList(entity.getTags()));
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(Long id) {
         jdbcTemplate.update(EntityQuery.DELETE_GIFT,id);
+        mtmDao.deleteByGiftId(id);
     }
 
     @Override
     public GiftCertificate findById(Long id) {
-        return jdbcTemplate.queryForObject(EntityQuery.FIND_BY_ID_GIFT,new GiftCertificateMapper(builder),id);
+        GiftCertificate result = jdbcTemplate.queryForObject(EntityQuery.FIND_BY_ID_GIFT,
+                new GiftCertificateMapper(builder),id);
+        List<Tag> tagList = new ArrayList<>();
+        mtmDao.findByGiftId(id).forEach(i -> {
+            tagList.add(tagDao.findById(i.getTagId()));
+        });
+        result.setTags(tagList);
+        return result;
     }
 
+    @Override
+    protected long executeEntity(GiftCertificate entity, String query) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.
+                    prepareStatement(EntityQuery.INSERT_GIFT);
+            fillPreparedStatement(entity,statement);
+            return statement;
+        },keyHolder);
+        return keyHolder.getKey().longValue();
+//        jdbcTemplate.update(EntityQuery.INSERT_GIFT,
+//                entity.getName(),entity.getDescription(),
+//                entity.getPrice(),entity.getDuration(),
+//                entity.getCreate_date().toString(),entity.getUpdate_date().toString());
+    }
+
+    @Override
+    protected void fillPreparedStatement(GiftCertificate entity,PreparedStatement statement) throws SQLException {
+        statement.setString(1, entity.getName());
+        statement.setString(2,entity.getDescription());
+        statement.setBigDecimal(3,entity.getPrice());
+        statement.setInt(4, entity.getDuration());
+        statement.setDate(5,
+                (Date) Date.from(entity.getCreate_date().atZone(ZoneId.systemDefault()).toInstant()));
+        statement.setDate(6,
+                (Date) Date.from(entity.getUpdate_date().atZone(ZoneId.systemDefault()).toInstant()));
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public interface ManyToManyDao {
     List<ManyToMany> findByGiftId(long id);
     List<ManyToMany> findByTagId(long id);
-    void create(long giftId,List<Tag> tagList);
+    void create(long giftId,List<Long> tagList);
     void update(long giftId,List<Tag> tagList);
     void deleteByGiftId(long id);
     void deleteByTagId(long id);

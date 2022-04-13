@@ -1,9 +1,12 @@
 package com.epam.esm.task.dto;
 
+import org.hibernate.validator.constraints.Length;
+
 import java.util.Objects;
 
 public abstract class Dto {
     protected long id;
+    @Length(min = 2,max = 42)
     protected String name;
 
     public Dto(){}

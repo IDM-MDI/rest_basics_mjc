@@ -5,5 +5,6 @@ import com.epam.esm.task.entity.impl.Tag;
 import java.util.List;
 
 public interface TagDao extends CrdDao<Tag,Long>{
-    void createWithList(List<Tag> tagList);
+    List<Long> createWithList(List<Tag> tagList);
+    Tag findByName(String name);
 }

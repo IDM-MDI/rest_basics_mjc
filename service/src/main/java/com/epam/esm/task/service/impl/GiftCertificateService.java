@@ -1,6 +1,7 @@
 package com.epam.esm.task.service.impl;
 
 import com.epam.esm.task.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.task.dto.impl.GiftCertificateDto;
 import com.epam.esm.task.entity.impl.GiftCertificate;
 import com.epam.esm.task.service.CustomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Service
 @EnableTransactionManagement(proxyTargetClass = true)
-public class GiftCertificateService implements CustomService<GiftCertificate,Long> {
+public class GiftCertificateService implements CustomService<GiftCertificateDto,Long> {
 
     private final GiftCertificateDaoImpl dao;
 
@@ -21,8 +22,8 @@ public class GiftCertificateService implements CustomService<GiftCertificate,Lon
     }
 
     @Override
-    public void save(GiftCertificate entity) {
-        dao.create(entity);
+    public void save(GiftCertificateDto dto) {
+        dao.create(GiftCertificateDto.toEntity(dto));
     }
 
     @Override
@@ -31,18 +32,18 @@ public class GiftCertificateService implements CustomService<GiftCertificate,Lon
     }
 
     @Override
-    public void update(GiftCertificate entity) {
-        dao.update(entity);
+    public void update(GiftCertificateDto dto, Long id) {
+        dao.update(GiftCertificateDto.toEntity(dto),id);
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return dao.read();
+    public List<GiftCertificateDto> findAll() {
+        return GiftCertificateDto.toDtoList(dao.read());
     }
 
     @Override
-    public GiftCertificate findById(Long id) {
-        return dao.findById(id);
+    public GiftCertificateDto findById(Long id) {
+        return GiftCertificateDto.toDto(dao.findById(id));
     }
 
 }

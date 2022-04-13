@@ -1,10 +1,10 @@
 package com.epam.esm.task.controller;
 
 
+import com.epam.esm.task.dto.impl.TagDto;
 import com.epam.esm.task.entity.impl.Tag;
 import com.epam.esm.task.service.impl.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +22,12 @@ public class TagController {
     }
 
     @GetMapping
-    public List<Tag> getTags() {
+    public List<TagDto> getTags() {
         return service.findAll();
     }
 
     @PostMapping
-    public ResponseEntity addTag(@RequestBody Tag entity) {
+    public ResponseEntity addTag(@RequestBody TagDto entity) {
         try{
             service.save(entity);
             return ResponseEntity.ok("Server is working");
@@ -46,7 +46,7 @@ public class TagController {
         }
     }
     @GetMapping("/{id}")
-    public Tag getByIdTag(@PathVariable long id) {
+    public TagDto getByIdTag(@PathVariable long id) {
         return service.findById(id);
     }
 }
