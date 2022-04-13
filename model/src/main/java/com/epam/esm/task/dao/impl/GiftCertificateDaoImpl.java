@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.ZoneId;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +70,7 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
         jdbcTemplate.update(EntityQuery.UPDATE_GIFT,
                 entity.getName(),entity.getDescription(),
                 entity.getPrice(),entity.getDuration(),
-                entity.getCreate_date(),entity.getUpdate_date(),
-                entity.getId());
+                entity.getCreate_date(),entity.getUpdate_date(),id);
         mtmDao.deleteByGiftId(id);
         mtmDao.create(id,tagDao.createWithList(entity.getTags()));
     }
@@ -100,15 +99,11 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.
-                    prepareStatement(EntityQuery.INSERT_GIFT);
+                    prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             fillPreparedStatement(entity,statement);
             return statement;
         },keyHolder);
         return keyHolder.getKey().longValue();
-//        jdbcTemplate.update(EntityQuery.INSERT_GIFT,
-//                entity.getName(),entity.getDescription(),
-//                entity.getPrice(),entity.getDuration(),
-//                entity.getCreate_date().toString(),entity.getUpdate_date().toString());
     }
 
     @Override
@@ -117,9 +112,7 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
         statement.setString(2,entity.getDescription());
         statement.setBigDecimal(3,entity.getPrice());
         statement.setInt(4, entity.getDuration());
-        statement.setDate(5,
-                (Date) Date.from(entity.getCreate_date().atZone(ZoneId.systemDefault()).toInstant()));
-        statement.setDate(6,
-                (Date) Date.from(entity.getUpdate_date().atZone(ZoneId.systemDefault()).toInstant()));
+        statement.setDate(5,Date.valueOf(entity.getCreate_date().toLocalDate()));
+        statement.setDate(6,Date.valueOf(entity.getUpdate_date().toLocalDate()));
     }
 }

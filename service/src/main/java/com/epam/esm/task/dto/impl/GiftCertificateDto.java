@@ -17,10 +17,10 @@ public class GiftCertificateDto extends Dto {
     private BigDecimal price;
     private int duration;
 
-    @DateTimeFormat(pattern = "YYYY-MM-DDTHH:MM:SS.MS")
+    @DateTimeFormat(pattern = "YYYY-MM-DD")
     private String create_date;
 
-    @DateTimeFormat(pattern = "YYYY-MM-DDTHH:MM:SS.MS")
+    @DateTimeFormat(pattern = "YYYY-MM-DD")
     private String update_date;
 
     private List<TagDto> tags;

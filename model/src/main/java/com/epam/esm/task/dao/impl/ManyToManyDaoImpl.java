@@ -63,6 +63,12 @@ public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements M
 
     @Override
     protected void fillPreparedStatement(ManyToMany entity, PreparedStatement statement) throws SQLException {
+        statement.setLong(1,entity.getGiftId());
+        statement.setLong(2,entity.getTagId());
+    }
 
+    @Override
+    protected long executeEntity(ManyToMany entity, String query) {
+        return 0;
     }
 }

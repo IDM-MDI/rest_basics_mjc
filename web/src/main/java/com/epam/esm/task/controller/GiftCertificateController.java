@@ -28,12 +28,13 @@ public class GiftCertificateController {
 
     @PostMapping
     public ResponseEntity addGiftCertificate(@RequestBody GiftCertificateDto entity) {
-        try{
-            service.save(entity);
-            return ResponseEntity.ok("Server is working");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Server is not working 404 bad request");
-        }
+        service.save(entity);
+        return ResponseEntity.ok("Server is working");
+//        try{
+//
+//        }catch (Exception e){
+//            return ResponseEntity.badRequest().body("Server is not working 404 bad request");
+//        }
     }
 
     @DeleteMapping("/{id}")
@@ -49,12 +50,13 @@ public class GiftCertificateController {
     @PatchMapping("/{id}")
     public ResponseEntity updateGiftCertificate(@PathVariable("id") long id,
                                                 @RequestBody GiftCertificateDto entity) {
-        try{
-            service.update(entity,id);
-            return ResponseEntity.ok("Server is working");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Server is not working 404 bad request");
-        }
+        service.update(entity,id);
+        return ResponseEntity.ok("Server is working");
+//        try{
+//
+//        }catch (Exception e){
+//            return ResponseEntity.badRequest().body("Server is not working 404 bad request");
+//        }
     }
 
 }

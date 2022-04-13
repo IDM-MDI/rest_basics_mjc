@@ -14,8 +14,10 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
@@ -67,11 +69,11 @@ public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.
-                    prepareStatement(EntityQuery.INSERT_TAG);
+                    prepareStatement(EntityQuery.INSERT_TAG, Statement.RETURN_GENERATED_KEYS);
             fillPreparedStatement(entity,statement);
             return statement;
         },keyHolder);
-        return keyHolder.getKey().longValue();
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
