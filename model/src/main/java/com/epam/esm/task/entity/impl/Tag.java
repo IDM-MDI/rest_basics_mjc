@@ -23,12 +23,11 @@ public class Tag extends Entity {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Tag {").
-                append(" id = ").append(id).
-                append(", name = ").append(name).
-                append(" }");
-        return sb.toString();
+        String sb = "{\n" +
+                "id = " + id +
+                ",\n name = " + name +
+                "}\n";
+        return sb;
     }
 
 }

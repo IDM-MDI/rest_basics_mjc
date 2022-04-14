@@ -143,4 +143,18 @@ public class GiftCertificateDto extends Dto {
     public int hashCode() {
         return Objects.hash(super.hashCode(), description, price, duration, create_date, update_date, tags);
     }
+
+    @Override
+    public String toString() {
+        return "{\n" +
+                "id=" + id +
+                ",\n name='" + name + '\'' +
+                ",\n description='" + description + '\'' +
+                ",\n price=" + price +
+                ",\n duration=" + duration +
+                ",\n create_date='" + create_date + '\'' +
+                ",\n update_date='" + update_date + '\'' +
+                ",\n tags=" + tags +
+                "}\n";
+    }
 }

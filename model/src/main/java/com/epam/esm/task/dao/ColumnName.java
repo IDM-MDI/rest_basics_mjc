@@ -1,6 +1,34 @@
 package com.epam.esm.task.dao;
 
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Component
+@PropertySource("classpath:columnName.properties")
 public class ColumnName {
+    @Value("${tag}")
+    private String tag;
+    @Value("${giftCertificate}")
+    private String giftCertificate;
+    @Value("${giftTag}")
+    private String giftTag;
+
+    @Bean("columns")
+    public Map<String,List<String>> getColumns() {
+        Map<String, List<String>> columns = new HashMap<>();
+        columns.put("giftCertificate",List.of(giftCertificate.split(",")));
+        columns.put("tag",List.of(tag.split(",")));
+        columns.put("giftTag",List.of(giftTag.split(",")));
+        return columns;
+    }
+
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
@@ -11,4 +39,6 @@ public class ColumnName {
     public static final String DELETED = "deleted";
     public static final String GIFT_ID = "gift_id";
     public static final String TAG_ID = "tag_id";
+
+
 }

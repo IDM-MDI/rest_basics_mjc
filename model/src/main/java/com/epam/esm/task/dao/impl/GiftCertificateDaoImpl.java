@@ -2,12 +2,16 @@ package com.epam.esm.task.dao.impl;
 
 import com.epam.esm.task.builder.impl.GiftCertificateBuilder;
 import com.epam.esm.task.dao.AbstractDao;
-import com.epam.esm.task.dao.EntityQuery;
+import com.epam.esm.task.dao.query.EntityQuery;
 import com.epam.esm.task.dao.GiftCertificateDao;
 import com.epam.esm.task.dao.mapper.GiftCertificateMapper;
+import com.epam.esm.task.dao.query.QueryCreator;
 import com.epam.esm.task.entity.impl.GiftCertificate;
 import com.epam.esm.task.entity.impl.Tag;
+import com.epam.esm.task.exception.DaoException;
+import static com.epam.esm.task.exception.DaoExceptionCode.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -20,20 +24,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> implements GiftCertificateDao {
 
+    private final String tableName = "gift_certificate";
+    private final QueryCreator creator;
     private final GiftCertificateBuilder builder;
     private final TagDaoImpl tagDao;
     private final ManyToManyDaoImpl mtmDao;
 
     @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
-                                  GiftCertificateBuilder builder,
+                                  QueryCreator creator, GiftCertificateBuilder builder,
                                   TagDaoImpl tagDao,
                                   ManyToManyDaoImpl mtmDao) {
         super(jdbcTemplate);
+        this.creator = creator;
         this.builder = builder;
         this.tagDao = tagDao;
         this.mtmDao = mtmDao;
@@ -41,56 +49,82 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public long create(GiftCertificate entity) {
-        long giftId = executeEntity(entity,EntityQuery.INSERT_GIFT);
-        mtmDao.create(giftId,tagDao.createWithList(entity.getTags()));
-        return giftId;
+    public long create(GiftCertificate entity) throws DaoException {
+        try{
+            long giftId = executeEntity(entity,EntityQuery.INSERT_GIFT);
+            mtmDao.create(giftId,tagDao.createWithList(entity.getTags()));
+            return giftId;
+        }catch (DataAccessException e) {
+            throw new DaoException(DAO_SAVE_ERROR.toString(),e);
+        }
     }
 
     @Transactional
     @Override
-    public List<GiftCertificate> read() {
-        List<GiftCertificate> gifts = jdbcTemplate.query(EntityQuery.SELECT_GIFT,
-                new GiftCertificateMapper(builder));
+    public List<GiftCertificate> read() throws DaoException {
+        try {
+            List<GiftCertificate> gifts = jdbcTemplate.query(EntityQuery.SELECT_GIFT,
+                    new GiftCertificateMapper(builder));
+            findByListGift(gifts);
+            return gifts;
+        } catch(DataAccessException e) {
+            throw new DaoException(DAO_NOTHING_FIND_EXCEPTION.toString(), e);
+        }
+    }
 
-        gifts.forEach(i -> {
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void update(GiftCertificate entity, Long id) throws DaoException {
+        try {
+            jdbcTemplate.update(EntityQuery.UPDATE_GIFT,
+                    entity.getName(),entity.getDescription(),
+                    entity.getPrice(),entity.getDuration(),
+                    entity.getCreate_date(),entity.getUpdate_date(),id);
+            mtmDao.deleteByGiftId(id);
+            mtmDao.create(id,tagDao.createWithList(entity.getTags()));
+        } catch(DataAccessException e) {
+            throw new DaoException(DAO_UPDATE_ERROR.toString(),e);
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void delete(Long id) throws DaoException {
+        try {
+            jdbcTemplate.update(EntityQuery.DELETE_GIFT,id);
+            mtmDao.deleteByGiftId(id);
+        } catch (DataAccessException e) {
+            throw new DaoException(DAO_NOTHING_FIND_BY_ID.toString(),e);
+        }
+    }
+
+    @Override
+    public GiftCertificate findById(Long id) throws DaoException {
+        try {
+            GiftCertificate result = jdbcTemplate.queryForObject(EntityQuery.FIND_BY_ID_GIFT,
+                    new GiftCertificateMapper(builder),id);
             List<Tag> tagList = new ArrayList<>();
-                mtmDao.findByGiftId(i.getId()).forEach(j -> {
-                    tagList.add(tagDao.findById(j.getTagId()));
-                });
-            i.setTags(tagList);
-        });
+            mtmDao.findByGiftId(id).forEach(i -> {
 
-        return gifts;
+                try {
+                    tagList.add(tagDao.findById(i.getTagId()));
+                } catch (DaoException ignored) {}
+
+            });
+            if (result != null) {
+                result.setTags(tagList);
+            }
+            return result;
+        } catch (DataAccessException e) {
+            throw new DaoException(DAO_NOTHING_FIND_BY_ID.toString(),e);
+        }
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void update(GiftCertificate entity, Long id) {
-        jdbcTemplate.update(EntityQuery.UPDATE_GIFT,
-                entity.getName(),entity.getDescription(),
-                entity.getPrice(),entity.getDuration(),
-                entity.getCreate_date(),entity.getUpdate_date(),id);
-        mtmDao.deleteByGiftId(id);
-        mtmDao.create(id,tagDao.createWithList(entity.getTags()));
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void delete(Long id) {
-        jdbcTemplate.update(EntityQuery.DELETE_GIFT,id);
-        mtmDao.deleteByGiftId(id);
-    }
-
-    @Override
-    public GiftCertificate findById(Long id) {
-        GiftCertificate result = jdbcTemplate.queryForObject(EntityQuery.FIND_BY_ID_GIFT,
-                new GiftCertificateMapper(builder),id);
-        List<Tag> tagList = new ArrayList<>();
-        mtmDao.findByGiftId(id).forEach(i -> {
-            tagList.add(tagDao.findById(i.getTagId()));
-        });
-        result.setTags(tagList);
+    public List<GiftCertificate> findByParam(Map<String, String> validParam) {
+        List<GiftCertificate> result = jdbcTemplate.query(
+                creator.findByParam(tableName,validParam),
+                new GiftCertificateMapper(builder));
+        findByListGift(result);
         return result;
     }
 
@@ -114,5 +148,19 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
         statement.setInt(4, entity.getDuration());
         statement.setDate(5,Date.valueOf(entity.getCreate_date().toLocalDate()));
         statement.setDate(6,Date.valueOf(entity.getUpdate_date().toLocalDate()));
+    }
+
+    private void findByListGift(List<GiftCertificate> gifts){
+        gifts.forEach(i -> {
+            List<Tag> tagList = new ArrayList<>();
+            mtmDao.findByGiftId(i.getId()).forEach( j -> {
+
+                try {
+                    tagList.add(tagDao.findById(j.getTagId()));
+                } catch (DaoException ignored) {}
+
+            });
+            i.setTags(tagList);
+        });
     }
 }

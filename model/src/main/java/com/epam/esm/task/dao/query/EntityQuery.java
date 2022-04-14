@@ -1,4 +1,4 @@
-package com.epam.esm.task.dao;
+package com.epam.esm.task.dao.query;
 
 public class EntityQuery {
     public static final String INSERT_GIFT = "INSERT INTO gift_certificate" +

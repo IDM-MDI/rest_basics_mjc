@@ -1,7 +1,7 @@
 package com.epam.esm.task.dao.impl;
 
 import com.epam.esm.task.dao.AbstractDao;
-import com.epam.esm.task.dao.EntityQuery;
+import com.epam.esm.task.dao.query.EntityQuery;
 import com.epam.esm.task.dao.ManyToManyDao;
 import com.epam.esm.task.dao.mapper.ManyToManyMapper;
 import com.epam.esm.task.entity.impl.ManyToMany;

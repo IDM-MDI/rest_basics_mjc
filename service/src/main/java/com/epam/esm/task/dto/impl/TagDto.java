@@ -39,12 +39,10 @@ public class TagDto extends Dto {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("TagDto {").
-                append(" id = ").append(id).
-                append(", name = ").append(name).
-                append(" }");
-        return sb.toString();
+        return "{\n" +
+                " id = " + id +
+                ",\n name = " + name +
+                "}\n";
     }
 
 }

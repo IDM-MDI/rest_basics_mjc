@@ -11,6 +11,6 @@ import java.sql.SQLException;
 public class ManyToManyMapper implements RowMapper<ManyToMany> {
     @Override
     public ManyToMany mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new ManyToMany(rs.getLong(ColumnName.GIFT_ID),rs.getLong(ColumnName.TAG_ID));
+        return new ManyToMany(rs.getLong(ColumnName.ID),rs.getLong(ColumnName.GIFT_ID),rs.getLong(ColumnName.TAG_ID));
     }
 }

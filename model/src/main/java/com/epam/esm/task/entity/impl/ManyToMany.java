@@ -6,7 +6,8 @@ public class ManyToMany extends Entity {
     private long giftId;
     private long tagId;
 
-    public ManyToMany(long giftId, long tagId) {
+    public ManyToMany(long id, long giftId, long tagId) {
+        this.id = id;
         this.giftId = giftId;
         this.tagId = tagId;
     }
