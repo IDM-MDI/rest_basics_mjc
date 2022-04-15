@@ -4,6 +4,7 @@ import com.epam.esm.task.dao.AbstractDao;
 import com.epam.esm.task.dao.query.EntityQuery;
 import com.epam.esm.task.dao.ManyToManyDao;
 import com.epam.esm.task.dao.mapper.ManyToManyMapper;
+import com.epam.esm.task.dao.query.QueryCreator;
 import com.epam.esm.task.entity.impl.ManyToMany;
 import com.epam.esm.task.entity.impl.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +14,23 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements ManyToManyDao {
 
+    private final String tableName = "gift_tag";
+    private final List<String> tableColumns;
+
     @Autowired
-    public ManyToManyDaoImpl(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+    public ManyToManyDaoImpl(JdbcTemplate jdbcTemplate, QueryCreator creator, Map<String,List<String>> tableColumns) {
+        super(jdbcTemplate,creator);
+        this.tableColumns = tableColumns.get(tableName);
     }
 
     @Override
     public ManyToMany findById(Long id) {
-        return jdbcTemplate.queryForObject(EntityQuery.SELECT_MTM_BY_ID, new ManyToManyMapper(),id);
+        return jdbcTemplate.queryForObject(creator.findById(tableName), new ManyToManyMapper(),id);
     }
 
     @Override
@@ -39,15 +45,17 @@ public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements M
 
     @Override
     public void create(long giftId, List<Long> tagIdList) {
+        String query = creator.insert(tableName,tableColumns);
         tagIdList.forEach((i)->{
-            jdbcTemplate.update(EntityQuery.INSERT_MTM,giftId,i);
+            jdbcTemplate.update(query,giftId,i);
         });
     }
 
     @Override
     public void update(long giftId, List<Tag> tagList) {
+        String query = creator.update(tableName,tableColumns);
         tagList.forEach((i)->{
-            jdbcTemplate.update(EntityQuery.UPDATE_MTM_BY_GIFT_ID,giftId,i.getId());
+            jdbcTemplate.update(query,giftId,i.getId());
         });
     }
 

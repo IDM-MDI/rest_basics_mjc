@@ -2,10 +2,10 @@ package com.epam.esm.task.dao.impl;
 
 import com.epam.esm.task.builder.impl.TagBuilder;
 import com.epam.esm.task.dao.AbstractDao;
-import com.epam.esm.task.dao.ColumnName;
 import com.epam.esm.task.dao.query.EntityQuery;
 import com.epam.esm.task.dao.TagDao;
 import com.epam.esm.task.dao.mapper.TagMapper;
+import com.epam.esm.task.dao.query.QueryCreator;
 import com.epam.esm.task.entity.impl.Tag;
 import com.epam.esm.task.exception.DaoException;
 import com.epam.esm.task.exception.DaoExceptionCode;
@@ -27,18 +27,22 @@ import java.util.Objects;
 @Repository
 public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
 
+    private final String tableName = "tag";
+    private final List<String> tableColumns;
     private final TagBuilder builder;
 
     @Autowired
-    public TagDaoImpl(JdbcTemplate jdbcTemplate, TagBuilder builder) {
-        super(jdbcTemplate);
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, QueryCreator creator, Map<String,List<String>> tableColumns, TagBuilder builder) {
+        super(jdbcTemplate,creator);
+        this.tableColumns = tableColumns.get(tableName);
         this.builder = builder;
     }
 
     @Override
     public long create(Tag entity) throws DaoException {
         try {
-            return executeEntity(entity,EntityQuery.INSERT_TAG);
+            String query = creator.insert(tableName,tableColumns);
+            return executeEntity(entity,query);
         } catch (DataAccessException e) {
             throw new DaoException(DaoExceptionCode.DAO_SAVE_ERROR.toString(), e);
         }
@@ -47,7 +51,8 @@ public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
     @Override
     public List<Tag> read() throws DaoException {
         try {
-            return jdbcTemplate.query(EntityQuery.SELECT_TAG,new TagMapper(builder));
+            String query = creator.findAll(tableName);
+            return jdbcTemplate.query(query,new TagMapper(builder));
         } catch (DataAccessException e) {
             throw new DaoException(DaoExceptionCode.DAO_NOTHING_FIND_EXCEPTION.toString(), e);
         }
@@ -56,7 +61,8 @@ public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
     @Override
     public void delete(Long id) throws DaoException {
         try {
-            jdbcTemplate.update(EntityQuery.DELETE_TAG,id);
+            String query = creator.delete(tableName);
+            jdbcTemplate.update(query,id);
         } catch (DataAccessException e) {
             throw new DaoException(DaoExceptionCode.DAO_NOTHING_FIND_BY_ID.toString(), e);
         }
@@ -65,7 +71,8 @@ public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
     @Override
     public Tag findById(Long id) throws DaoException {
         try {
-            return jdbcTemplate.queryForObject(EntityQuery.FIND_BY_ID_TAG,new TagMapper(builder),id);
+            String query = creator.findById(tableName);
+            return jdbcTemplate.queryForObject(query,new TagMapper(builder),id);
         } catch (DataAccessException e) {
             throw new DaoException(DaoExceptionCode.DAO_NOTHING_FIND_BY_ID.toString(), e);
         }
@@ -99,7 +106,7 @@ public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.
-                    prepareStatement(EntityQuery.INSERT_TAG, Statement.RETURN_GENERATED_KEYS);
+                    prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             fillPreparedStatement(entity,statement);
             return statement;
         },keyHolder);

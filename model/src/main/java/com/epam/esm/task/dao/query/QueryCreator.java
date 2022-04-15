@@ -10,30 +10,18 @@ public class QueryCreator {
 
     private final String ID = "id";
 
-    public String createQuery(QueryType type, String tableName, List<String> columns) {
-        String query = "";
-        switch (type) {
-            case SELECT_BY_ID -> query = findById(tableName);
-            case SELECT_ALL -> query = findAll(tableName);
-            case INSERT -> query = insert(tableName,columns);
-            case UPDATE -> query = update(tableName,columns);
-            case DELETE -> query = delete(tableName);
-        }
-        return query;
-    }
-
-    private String delete(String tableName) {
+    public String delete(String tableName) {
         return "UPDATE " + tableName +
                 " SET deleted = 1 " +
                 "WHERE id = ?";
     }
 
-    private String update(String tableName, List<String> columns) {
-        return "UPDATE " + tableName + " SET " + fillColumn(columns) +
+    public String update(String tableName, List<String> columns) {
+        return "UPDATE " + tableName + " SET " + fillColumnQuestionMark(columns) +
                 " WHERE id = ?";
     }
 
-    private String insert(String tableName, List<String> columns) {
+    public String insert(String tableName, List<String> columns) {
         int count = 0;
         StringBuilder query = new StringBuilder("INSERT INTO " + tableName + "(");
         for (String i: columns) {
@@ -48,15 +36,15 @@ public class QueryCreator {
                 count++;
             }
         }
-        query.append(") VALUES(").append(fillQuestionMark(count)).append(");");
+        query.append(") VALUES(").append(fillInsertQuestionMark(count)).append(");");
         return query.toString();
     }
 
-    private String findAll(String tableName) {
+    public String findAll(String tableName) {
         return "SELECT * FROM " + tableName;
     }
 
-    private String findById(String tableName) {
+    public String findById(String tableName) {
         return "SELECT * FROM " + tableName + " WHERE id = ?";
     }
 
@@ -70,7 +58,7 @@ public class QueryCreator {
         return result.append(";").toString();
     }
 
-    private String fillQuestionMark(int count) {
+    private String fillInsertQuestionMark(int count) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < count; i++) {
             if(i == 0) {
@@ -82,7 +70,7 @@ public class QueryCreator {
         }
         return result.toString();
     }
-    private String fillColumn(List<String> columns) {
+    private String fillColumnQuestionMark(List<String> columns) {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         String equal = " = ?";

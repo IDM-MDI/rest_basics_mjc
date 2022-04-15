@@ -15,17 +15,17 @@ import java.util.Map;
 public class ColumnName {
     @Value("${tag}")
     private String tag;
-    @Value("${giftCertificate}")
+    @Value("${gift_certificate}")
     private String giftCertificate;
-    @Value("${giftTag}")
+    @Value("${gift_tag}")
     private String giftTag;
 
     @Bean("columns")
     public Map<String,List<String>> getColumns() {
         Map<String, List<String>> columns = new HashMap<>();
-        columns.put("giftCertificate",List.of(giftCertificate.split(",")));
+        columns.put("gift_certificate",List.of(giftCertificate.split(",")));
         columns.put("tag",List.of(tag.split(",")));
-        columns.put("giftTag",List.of(giftTag.split(",")));
+        columns.put("gift_tag",List.of(giftTag.split(",")));
         return columns;
     }
 
@@ -36,7 +36,6 @@ public class ColumnName {
     public static final String DURATION = "duration";
     public static final String CREATE_DATE = "create_date";
     public static final String LAST_UPDATE_DATE = "last_update_date";
-    public static final String DELETED = "deleted";
     public static final String GIFT_ID = "gift_id";
     public static final String TAG_ID = "tag_id";
 

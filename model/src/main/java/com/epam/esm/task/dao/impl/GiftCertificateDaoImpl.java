@@ -30,28 +30,29 @@ import java.util.Map;
 public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> implements GiftCertificateDao {
 
     private final String tableName = "gift_certificate";
-    private final QueryCreator creator;
+    private final List<String> tableColumns;
     private final GiftCertificateBuilder builder;
     private final TagDaoImpl tagDao;
     private final ManyToManyDaoImpl mtmDao;
 
     @Autowired
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
-                                  QueryCreator creator, GiftCertificateBuilder builder,
+                                  Map<String,List<String>> allColumns, QueryCreator creator, GiftCertificateBuilder builder,
                                   TagDaoImpl tagDao,
                                   ManyToManyDaoImpl mtmDao) {
-        super(jdbcTemplate);
-        this.creator = creator;
+        super(jdbcTemplate,creator);
         this.builder = builder;
         this.tagDao = tagDao;
         this.mtmDao = mtmDao;
+        this.tableColumns = allColumns.get(tableName);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public long create(GiftCertificate entity) throws DaoException {
         try{
-            long giftId = executeEntity(entity,EntityQuery.INSERT_GIFT);
+            String query = creator.insert(tableName,tableColumns);
+            long giftId = executeEntity(entity,query);
             mtmDao.create(giftId,tagDao.createWithList(entity.getTags()));
             return giftId;
         }catch (DataAccessException e) {
@@ -63,7 +64,8 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
     @Override
     public List<GiftCertificate> read() throws DaoException {
         try {
-            List<GiftCertificate> gifts = jdbcTemplate.query(EntityQuery.SELECT_GIFT,
+            String query = creator.findAll(tableName);
+            List<GiftCertificate> gifts = jdbcTemplate.query(query,
                     new GiftCertificateMapper(builder));
             findByListGift(gifts);
             return gifts;
@@ -76,7 +78,8 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
     @Override
     public void update(GiftCertificate entity, Long id) throws DaoException {
         try {
-            jdbcTemplate.update(EntityQuery.UPDATE_GIFT,
+            String query = creator.update(tableName,tableColumns);
+            jdbcTemplate.update(query,
                     entity.getName(),entity.getDescription(),
                     entity.getPrice(),entity.getDuration(),
                     entity.getCreate_date(),entity.getUpdate_date(),id);
@@ -91,7 +94,8 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
     @Override
     public void delete(Long id) throws DaoException {
         try {
-            jdbcTemplate.update(EntityQuery.DELETE_GIFT,id);
+            String query = creator.delete(tableName);
+            jdbcTemplate.update(query,id);
             mtmDao.deleteByGiftId(id);
         } catch (DataAccessException e) {
             throw new DaoException(DAO_NOTHING_FIND_BY_ID.toString(),e);
@@ -101,7 +105,8 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
     @Override
     public GiftCertificate findById(Long id) throws DaoException {
         try {
-            GiftCertificate result = jdbcTemplate.queryForObject(EntityQuery.FIND_BY_ID_GIFT,
+            String query = creator.findById(tableName);
+            GiftCertificate result = jdbcTemplate.queryForObject(query,
                     new GiftCertificateMapper(builder),id);
             List<Tag> tagList = new ArrayList<>();
             mtmDao.findByGiftId(id).forEach(i -> {
