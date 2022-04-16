@@ -8,6 +8,7 @@ import com.epam.esm.task.exception.ServiceException;
 import com.epam.esm.task.service.CustomService;
 import com.epam.esm.task.validator.ParameterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Service
 @EnableTransactionManagement(proxyTargetClass = true)
+@Profile("prod")
 public class GiftCertificateService implements CustomService<GiftCertificateDto,Long> {
 
     private final String tableName = "giftCertificate";

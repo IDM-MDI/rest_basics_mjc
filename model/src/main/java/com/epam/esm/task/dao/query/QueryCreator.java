@@ -9,23 +9,24 @@ import java.util.Map;
 public class QueryCreator {
 
     private final String ID = "id";
+    private final String DELETED = "deleted";
 
     public String delete(String tableName) {
         return "UPDATE " + tableName +
                 " SET deleted = 1 " +
-                "WHERE id = ?";
+                "WHERE id = ? ;";
     }
 
     public String update(String tableName, List<String> columns) {
         return "UPDATE " + tableName + " SET " + fillColumnQuestionMark(columns) +
-                " WHERE id = ?";
+                " WHERE id = ? ;";
     }
 
     public String insert(String tableName, List<String> columns) {
         int count = 0;
         StringBuilder query = new StringBuilder("INSERT INTO " + tableName + "(");
         for (String i: columns) {
-            if(!i.equals(ID)) {
+            if(!i.equals(ID) && !i.equals(DELETED)) {
                 if(count == 0) {
                     query.append(i);
                 }
@@ -41,11 +42,11 @@ public class QueryCreator {
     }
 
     public String findAll(String tableName) {
-        return "SELECT * FROM " + tableName;
+        return "SELECT * FROM " + tableName + ";";
     }
 
     public String findById(String tableName) {
-        return "SELECT * FROM " + tableName + " WHERE id = ?";
+        return "SELECT * FROM " + tableName + " WHERE id = ? ;";
     }
 
     public String findByParam(String tableName, Map<String,String> param) {

@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 @ComponentScan("com.epam.esm")
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
+@Profile("prod")
 public class SpringJdbcConfig {
     @Value("${url}")
     private String url;

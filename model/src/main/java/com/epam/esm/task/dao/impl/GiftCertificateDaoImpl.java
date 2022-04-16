@@ -11,6 +11,7 @@ import com.epam.esm.task.entity.impl.Tag;
 import com.epam.esm.task.exception.DaoException;
 import static com.epam.esm.task.exception.DaoExceptionCode.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Profile("prod")
 public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> implements GiftCertificateDao {
 
     private final String tableName = "gift_certificate";

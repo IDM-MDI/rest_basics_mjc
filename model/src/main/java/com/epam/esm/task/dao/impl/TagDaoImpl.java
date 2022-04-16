@@ -10,6 +10,7 @@ import com.epam.esm.task.entity.impl.Tag;
 import com.epam.esm.task.exception.DaoException;
 import com.epam.esm.task.exception.DaoExceptionCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Repository
+@Profile("prod")
 public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
 
     private final String tableName = "tag";

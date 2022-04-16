@@ -1,6 +1,7 @@
 package com.epam.esm.task.dao;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -19,6 +20,7 @@ public class ColumnName {
     private String giftCertificate;
     @Value("${gift_tag}")
     private String giftTag;
+
 
     @Bean("columns")
     public Map<String,List<String>> getColumns() {

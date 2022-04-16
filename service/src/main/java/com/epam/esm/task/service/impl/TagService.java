@@ -6,6 +6,7 @@ import com.epam.esm.task.exception.DaoException;
 import com.epam.esm.task.exception.ServiceException;
 import com.epam.esm.task.service.CustomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @EnableTransactionManagement(proxyTargetClass = true)
+@Profile("prod")
 public class TagService implements CustomService<TagDto,Long> {
 
     private final TagDaoImpl dao;

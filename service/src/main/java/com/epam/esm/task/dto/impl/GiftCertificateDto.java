@@ -2,33 +2,34 @@ package com.epam.esm.task.dto.impl;
 
 import com.epam.esm.task.dto.Dto;
 import com.epam.esm.task.entity.impl.GiftCertificate;
-import jakarta.validation.constraints.Min;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 public class GiftCertificateDto extends Dto {
     private String description;
+    @Min(1)
     private BigDecimal price;
+    @Min(1)
     private int duration;
 
-    @DateTimeFormat(pattern = "YYYY-MM-DD")
-    private String create_date;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime create_date;
 
-    @DateTimeFormat(pattern = "YYYY-MM-DD")
-    private String update_date;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime update_date;
 
     private List<TagDto> tags;
 
     public GiftCertificateDto(long id,
                               String name, String description,
                               BigDecimal price, int duration,
-                              String create_date, String update_date, List<TagDto> tagDtos) {
+                              LocalDateTime create_date, LocalDateTime update_date, List<TagDto> tagDtos) {
         super(id, name);
         this.description = description;
         this.price = price;
@@ -42,7 +43,7 @@ public class GiftCertificateDto extends Dto {
     public GiftCertificateDto(long id,
                               String name, String description,
                               BigDecimal price, int duration,
-                              String create_date, String update_date) {
+                              LocalDateTime create_date, LocalDateTime update_date) {
         super(id, name);
         this.description = description;
         this.price = price;
@@ -54,7 +55,7 @@ public class GiftCertificateDto extends Dto {
         return new GiftCertificateDto(certificate.getId(),
                 certificate.getName(),certificate.getDescription(),
                 certificate.getPrice(),certificate.getDuration(),
-                certificate.getCreate_date().toString(),certificate.getUpdate_date().toString(),
+                certificate.getCreate_date(),certificate.getUpdate_date(),
                 TagDto.toDtoList(certificate.getTags()));
     }
 
@@ -62,7 +63,7 @@ public class GiftCertificateDto extends Dto {
         return new GiftCertificate(dto.getId(),
                 dto.getName(),dto.getDescription(),
                 dto.getPrice(),dto.getDuration(),
-                LocalDateTime.parse(dto.getCreate_date()),LocalDateTime.parse(dto.getUpdate_date()),
+                dto.getCreate_date(),dto.getUpdate_date(),
                 TagDto.toEntityList(dto.getTags()));
     }
 
@@ -106,19 +107,19 @@ public class GiftCertificateDto extends Dto {
         this.duration = duration;
     }
 
-    public String getCreate_date() {
+    public LocalDateTime getCreate_date() {
         return create_date;
     }
 
-    public void setCreate_date(String create_date) {
+    public void setCreate_date(LocalDateTime create_date) {
         this.create_date = create_date;
     }
 
-    public String getUpdate_date() {
+    public LocalDateTime getUpdate_date() {
         return update_date;
     }
 
-    public void setUpdate_date(String update_date) {
+    public void setUpdate_date(LocalDateTime update_date) {
         this.update_date = update_date;
     }
 

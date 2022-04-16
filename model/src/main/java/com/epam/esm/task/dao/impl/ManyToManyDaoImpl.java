@@ -8,6 +8,7 @@ import com.epam.esm.task.dao.query.QueryCreator;
 import com.epam.esm.task.entity.impl.ManyToMany;
 import com.epam.esm.task.entity.impl.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Profile("prod")
 public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements ManyToManyDao {
 
     private final String tableName = "gift_tag";
