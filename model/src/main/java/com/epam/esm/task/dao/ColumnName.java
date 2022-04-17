@@ -40,6 +40,6 @@ public class ColumnName {
     public static final String LAST_UPDATE_DATE = "last_update_date";
     public static final String GIFT_ID = "gift_id";
     public static final String TAG_ID = "tag_id";
-
+    public static final String DELETED = "deleted";
 
 }

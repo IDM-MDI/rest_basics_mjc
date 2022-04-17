@@ -3,7 +3,6 @@ package com.epam.esm.task.validator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ParameterValidator {
     public static Map<String,String> getValidMap(Map<String,String> requestParam,

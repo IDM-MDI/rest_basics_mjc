@@ -23,4 +23,12 @@ public enum ExceptionCode {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "code=" + code +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

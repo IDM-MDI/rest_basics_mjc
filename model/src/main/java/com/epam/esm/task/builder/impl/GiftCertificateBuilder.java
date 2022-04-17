@@ -2,10 +2,13 @@ package com.epam.esm.task.builder.impl;
 
 import com.epam.esm.task.builder.EntityBuilder;
 import com.epam.esm.task.entity.impl.GiftCertificate;
+import com.epam.esm.task.entity.impl.Tag;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class GiftCertificateBuilder implements EntityBuilder {
@@ -16,9 +19,22 @@ public class GiftCertificateBuilder implements EntityBuilder {
     private int duration;
     private LocalDateTime create_date;
     private LocalDateTime update_date;
+    private boolean deleted;
+
+    private List<Tag> tagList;
 
     public GiftCertificateBuilder setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public GiftCertificateBuilder setDeleted(boolean deleted) {
+        this.deleted = deleted;
+        return this;
+    }
+
+    public GiftCertificateBuilder setTagList(List<Tag> tagList) {
+        this.tagList = tagList;
         return this;
     }
 
@@ -54,8 +70,20 @@ public class GiftCertificateBuilder implements EntityBuilder {
         return this;
     }
 
+
+
     @Override
     public GiftCertificate getResult() {
-        return new GiftCertificate(id,name,description,price,duration,create_date,update_date);
+        GiftCertificate result = new GiftCertificate();
+        result.setId(id);
+        result.setName(name);
+        result.setDescription(description);
+        result.setDuration(duration);
+        result.setPrice(price);
+        result.setCreate_date(create_date);
+        result.setUpdate_date(update_date);
+        result.setTags(tagList == null ? new ArrayList<>() : tagList);
+        result.setDeleted(deleted);
+        return result;
     }
 }

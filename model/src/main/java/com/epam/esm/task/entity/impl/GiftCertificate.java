@@ -14,35 +14,8 @@ public class GiftCertificate extends Entity {
     private LocalDateTime create_date;
     private LocalDateTime update_date;
     private List<Tag> tagList;
-    public GiftCertificate(){}
 
-    public GiftCertificate(long id,
-                           String name, String description,
-                           BigDecimal price, int duration,
-                           LocalDateTime create_date, LocalDateTime update_date) {
-        super(id);
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.duration = duration;
-        this.create_date = create_date;
-        this.update_date = update_date;
-    }
-
-    public GiftCertificate(long id,
-                           String name, String description,
-                           BigDecimal price, int duration,
-                           LocalDateTime create_date, LocalDateTime update_date,
-                           List<Tag> tagList) {
-        super(id);
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.duration = duration;
-        this.create_date = create_date;
-        this.update_date = update_date;
-        this.tagList = tagList;
-    }
+    public GiftCertificate() {}
 
     public String getName() {
         return name;

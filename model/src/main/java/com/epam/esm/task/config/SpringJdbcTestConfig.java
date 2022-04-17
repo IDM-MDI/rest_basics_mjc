@@ -10,7 +10,11 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -22,34 +26,44 @@ import javax.sql.DataSource;
 @PropertySource("classpath:testDataBase.properties")
 @Profile("test")
 public class SpringJdbcTestConfig {
-    @Value("${url}")
+    @Value("${test.db.url}")
     private String url;
-    @Value("${driverName}")
+    @Value("${test.db.driverName}")
     private String driverName;
-    @Value("${username}")
+    @Value("${test.db.username}")
     private String username;
-    @Value("${password}")
+    @Value("${test.db.password}")
     private String password;
 
     @Bean("dataSourceTest")
     public DataSource getMysqlTestDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverName);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword("");
-
-        Resource initSchema = new ClassPathResource("schema.sql");
-        Resource fillData = new ClassPathResource("fillData.sql");
-
-        DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initSchema,fillData);
-        DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
-        return dataSource;
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+        return builder
+                .setType(EmbeddedDatabaseType.HSQL)
+                .addScript("schema.sql")
+                .addScript("fillData.sql")
+                .build();
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName(driverName);
+//        dataSource.setUrl(url);
+//        dataSource.setUsername(username);
+//        dataSource.setPassword("");
+//
+//        Resource initSchema = new ClassPathResource("schema.sql");
+//        Resource fillData = new ClassPathResource("fillData.sql");
+//
+//        ResourceDatabasePopulator dbPopulator = new ResourceDatabasePopulator(initSchema,fillData);
+//        dbPopulator.execute(dataSource);
+//
+//        return dataSource;
     }
 
-    @Bean
-    public JdbcTemplate getJdbcTemplateTest(@Autowired @Qualifier("dataSourceTest") DataSource dataSource){
+    @Bean("jdbcTemplateTest")
+    public JdbcTemplate getJdbcTemplateTest(@Autowired DataSource dataSource){
         return new JdbcTemplate(dataSource);
+    }
+    @Bean
+    public DataSourceTransactionManager getDataSourceTransactionManager(@Autowired DataSource dataSource){
+        return new DataSourceTransactionManager(dataSource);
     }
 }

@@ -5,6 +5,16 @@ import java.util.Objects;
 public abstract class Entity {
     protected long id;
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    protected boolean deleted;
+
     public Entity(){}
 
     public Entity(long id){

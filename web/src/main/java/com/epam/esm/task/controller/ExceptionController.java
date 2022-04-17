@@ -20,50 +20,67 @@ import static com.epam.esm.task.exception.ExceptionCode.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Rest Controller Advice
+ * Created By Ishangulyev Dayanch
+ * This class need to catch exceptions
+ * @return custom one.
+ */
 @RestControllerAdvice
 @Profile("prod")
 public class ExceptionController {
 
+    /**
+     * @param e -exception
+     * Validation by ID Path
+     * @return custom one
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(BAD_REQUEST)
     public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
         return new ResponseEntity<>(BAD_PATH_ID.toString(), BAD_REQUEST);
     }
 
+    /**
+     * @param exception
+     * Validation by DAO exception
+     * @return custom one
+     */
     @ExceptionHandler(ServiceException.class)
     public final ResponseEntity<Object> handleDaoExceptions(ServiceException exception) {
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.SERVICE_UNAVAILABLE);
     }
 
+    /**
+     * Validation by Bad Request
+     * @return custom one
+     */
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, JsonProcessingException.class})
     public final ResponseEntity<String> handleBadRequestExceptions() {
         return new ResponseEntity<>(ExceptionCode.BAD_REQUEST.toString(), BAD_REQUEST);
     }
 
+    /**
+     * @return
+     */
     @ExceptionHandler(NoHandlerFoundException.class)
     public final ResponseEntity<String> handleBadRequestException() {
         return new ResponseEntity<>(ExceptionCode.NOT_FOUND_EXCEPTION.toString(), NOT_FOUND);
     }
 
+    /**
+     * @return
+     */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public final ResponseEntity<String> methodNotAllowedExceptionException() {
         return new ResponseEntity<>(METHOD_NOT_ALLOWED.toString(), HttpStatus.METHOD_NOT_ALLOWED);
     }
+
+    /**
+     * @return
+     */
     @ExceptionHandler(HttpMediaTypeException.class)
     public final ResponseEntity<String> handleBadMediaTypeException() {
         return new ResponseEntity<>(BAD_MEDIA_TYPE.toString(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
-
-//    @ResponseStatus(BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public Map<String, String> handleValidationExceptions(
-//            MethodArgumentNotValidException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getDefaultMessage();
-//            errors.put(fieldName, errorMessage);
-//        });
-//        return errors;
-//    }
 }

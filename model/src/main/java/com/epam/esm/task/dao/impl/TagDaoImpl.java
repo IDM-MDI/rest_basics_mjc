@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Repository
-@Profile("prod")
+@Profile("test")
 public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
 
     private final String tableName = "tag";

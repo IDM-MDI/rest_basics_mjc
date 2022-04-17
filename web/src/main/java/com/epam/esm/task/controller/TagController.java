@@ -14,6 +14,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
+/**
+ *
+ */
 @RestController
 @RequestMapping(value = "/tags")
 @Validated
@@ -27,22 +30,42 @@ public class TagController {
         this.service = service;
     }
 
+    /**
+     * @return
+     * @throws ServiceException
+     */
     @GetMapping
     public List<TagDto> getTags() throws ServiceException {
         return service.findAll();
     }
 
+    /**
+     * @param entity
+     * @return
+     * @throws ServiceException
+     */
     @PostMapping
     public ResponseEntity<String> addTag(@Valid @RequestBody TagDto entity) throws ServiceException {
         service.save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body("created");
     }
 
+    /**
+     * @param id
+     * @return
+     * @throws ServiceException
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTag(@PathVariable @Min(1) long id) throws ServiceException {
         service.delete(id);
         return ResponseEntity.status(HttpStatus.CREATED).body("deleted");
     }
+
+    /**
+     * @param id
+     * @return
+     * @throws ServiceException
+     */
     @GetMapping("/{id}")
     public TagDto getByIdTag(@PathVariable @Min(1) long id) throws ServiceException {
         return service.findById(id);

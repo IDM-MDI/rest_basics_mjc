@@ -13,6 +13,10 @@ public class Tag extends Entity {
         this.name = name;
     }
 
+    public Tag(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

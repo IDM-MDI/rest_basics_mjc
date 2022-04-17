@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ *
+ */
 @RestController
 @RequestMapping(value = "/gifts")
 @Validated
@@ -29,23 +32,43 @@ public class GiftCertificateController {
         this.service = service;
     }
 
+    /**
+     * @return
+     * @throws ServiceException
+     */
     @GetMapping
     public List<GiftCertificateDto> getAllGiftCertificate() throws ServiceException {
         return service.findAll();
     }
 
+    /**
+     * @param entity
+     * @return
+     * @throws ServiceException
+     */
     @PostMapping
     public ResponseEntity<String> addGiftCertificate(@Valid @RequestBody GiftCertificateDto entity) throws ServiceException {
         service.save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body("created");
     }
 
+    /**
+     * @param id
+     * @return
+     * @throws ServiceException
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteGiftCertificate(@PathVariable @Min(1) long id) throws ServiceException {
         service.delete(id);
         return ResponseEntity.status(HttpStatus.CREATED).body("deleted");
     }
 
+    /**
+     * @param id
+     * @param entity
+     * @return
+     * @throws ServiceException
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateGiftCertificate(@PathVariable("id") @Min(1) long id,
                                               @Valid @RequestBody GiftCertificateDto entity) throws ServiceException {
@@ -53,11 +76,20 @@ public class GiftCertificateController {
         return ResponseEntity.status(HttpStatus.CREATED).body("updated");
     }
 
+    /**
+     * @param id
+     * @return
+     * @throws ServiceException
+     */
     @GetMapping("/{id}")
     public GiftCertificateDto getGiftCertificate(@PathVariable("id") @Min(1) long id) throws ServiceException {
         return service.findById(id);
     }
 
+    /**
+     * @param param
+     * @return
+     */
     @GetMapping("/filter")
     public List<GiftCertificateDto> getByFilter(@RequestParam Map<String,String> param) {
         return service.findByParam(param);

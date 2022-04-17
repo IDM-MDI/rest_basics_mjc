@@ -1,5 +1,6 @@
 package com.epam.esm.task.dto.impl;
 
+import com.epam.esm.task.builder.impl.GiftCertificateBuilder;
 import com.epam.esm.task.dto.Dto;
 import com.epam.esm.task.entity.impl.GiftCertificate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -60,11 +61,10 @@ public class GiftCertificateDto extends Dto {
     }
 
     public static GiftCertificate toEntity(GiftCertificateDto dto) {
-        return new GiftCertificate(dto.getId(),
-                dto.getName(),dto.getDescription(),
-                dto.getPrice(),dto.getDuration(),
-                dto.getCreate_date(),dto.getUpdate_date(),
-                TagDto.toEntityList(dto.getTags()));
+        return new GiftCertificateBuilder().setId(dto.getId()).setName(dto.getName()).setDescription(dto.getDescription()).
+                setDuration(dto.getDuration()).setPrice(dto.getPrice()).
+                setCreate_date(dto.getCreate_date()).setUpdate_date(dto.getUpdate_date())
+                .setTagList(TagDto.toEntityList(dto.getTags())).getResult();
     }
 
     public static List<GiftCertificateDto> toDtoList(List<GiftCertificate> list) {

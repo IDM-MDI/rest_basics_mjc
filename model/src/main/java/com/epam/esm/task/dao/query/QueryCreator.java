@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class created for create query
+ */
 @Component
 public class QueryCreator {
 
@@ -14,12 +17,12 @@ public class QueryCreator {
     public String delete(String tableName) {
         return "UPDATE " + tableName +
                 " SET deleted = 1 " +
-                "WHERE id = ? ;";
+                "WHERE id = ?;";
     }
 
     public String update(String tableName, List<String> columns) {
         return "UPDATE " + tableName + " SET " + fillColumnQuestionMark(columns) +
-                " WHERE id = ? ;";
+                " WHERE id = ?;";
     }
 
     public String insert(String tableName, List<String> columns) {
@@ -46,7 +49,7 @@ public class QueryCreator {
     }
 
     public String findById(String tableName) {
-        return "SELECT * FROM " + tableName + " WHERE id = ? ;";
+        return "SELECT * FROM " + tableName + " WHERE id = ?;";
     }
 
     public String findByParam(String tableName, Map<String,String> param) {
@@ -56,7 +59,7 @@ public class QueryCreator {
             result.append(k).append("=").append('\'').append(v).append('\'').append(" AND ");
         });
         result.delete(result.length()-4,result.length()-1);
-        return result.append(";").toString();
+        return result.toString().trim() + ";";
     }
 
     private String fillInsertQuestionMark(int count) {
@@ -76,7 +79,7 @@ public class QueryCreator {
         boolean first = true;
         String equal = " = ?";
         for (String i : columns) {
-            if (!i.equals(ID)) {
+            if (!(i.equals(ID) || i.equals(DELETED))) {
                 if (first) {
                     first = false;
                     result.append(i).append(equal);

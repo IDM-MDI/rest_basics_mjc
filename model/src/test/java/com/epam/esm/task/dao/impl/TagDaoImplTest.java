@@ -3,6 +3,7 @@ package com.epam.esm.task.dao.impl;
 import com.epam.esm.task.config.SpringJdbcTestConfig;
 import com.epam.esm.task.entity.impl.Tag;
 import com.epam.esm.task.exception.DaoException;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -17,8 +18,17 @@ import java.util.List;
 @ContextConfiguration(classes = SpringJdbcTestConfig.class)
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@RunWith(SpringJUnit4ClassRunner.class)
 class TagDaoImplTest {
+
+    private Tag tag1;
+    private Tag tag2;
+    private Tag tag3;
+
+
+    @Before
+    public void init(){
+        tag1 = new Tag(1,"tag1");
+    }
 
     @Autowired
     private TagDaoImpl dao;
@@ -32,7 +42,6 @@ class TagDaoImplTest {
         List<Tag> list = null;
         try {
             list = dao.read();
-            System.out.println(list);
         } catch (DaoException e) {
             e.printStackTrace();
         }
