@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Repository
-@Profile("test")
+@Profile("prod")
 public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
 
     private final String tableName = "tag";
@@ -78,6 +78,12 @@ public class TagDaoImpl extends AbstractDao<Tag,Long> implements TagDao {
         } catch (DataAccessException e) {
             throw new DaoException(DaoExceptionCode.DAO_NOTHING_FIND_BY_ID.toString(), e);
         }
+    }
+
+    @Override
+    public List<Tag> findByColumn(String columnName, String data) {
+        return jdbcTemplate.query(creator.findByColumn(tableName,columnName),
+                new TagMapper(builder),data);
     }
 
     @Override

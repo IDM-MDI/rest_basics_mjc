@@ -31,7 +31,7 @@ public class TagController {
     }
 
     /**
-     * @return
+     * @return all tags from database
      * @throws ServiceException
      */
     @GetMapping
@@ -40,8 +40,9 @@ public class TagController {
     }
 
     /**
-     * @param entity
-     * @return
+     * @param entity - from body
+     * creating tag to database
+     * @return create status
      * @throws ServiceException
      */
     @PostMapping
@@ -51,8 +52,9 @@ public class TagController {
     }
 
     /**
-     * @param id
-     * @return
+     * @param id from path
+     * delete tag by id
+     * @return delete status
      * @throws ServiceException
      */
     @DeleteMapping("/{id}")
@@ -62,8 +64,8 @@ public class TagController {
     }
 
     /**
-     * @param id
-     * @return
+     * @param id from path
+     * @return from database by id
      * @throws ServiceException
      */
     @GetMapping("/{id}")

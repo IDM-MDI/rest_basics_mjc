@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public abstract class AbstractDao<T extends Entity, K>{
@@ -23,6 +22,7 @@ public abstract class AbstractDao<T extends Entity, K>{
     }
 
     public abstract T findById(K id) throws DaoException;
+    public abstract List<T> findByColumn(String columnName, String data);
     protected abstract void fillPreparedStatement(T entity,PreparedStatement statement) throws SQLException;
     protected abstract long executeEntity(T entity,String query) throws DaoException;
 }

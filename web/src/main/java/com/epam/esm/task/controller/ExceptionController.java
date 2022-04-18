@@ -61,7 +61,8 @@ public class ExceptionController {
     }
 
     /**
-     * @return
+     * Validation by not found url
+     * @return custom one
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public final ResponseEntity<String> handleBadRequestException() {
@@ -69,7 +70,8 @@ public class ExceptionController {
     }
 
     /**
-     * @return
+     * Validation by method not alowed
+     * @return custom one
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public final ResponseEntity<String> methodNotAllowedExceptionException() {
@@ -77,7 +79,8 @@ public class ExceptionController {
     }
 
     /**
-     * @return
+     * Validation by json type only
+     * @return custom one
      */
     @ExceptionHandler(HttpMediaTypeException.class)
     public final ResponseEntity<String> handleBadMediaTypeException() {

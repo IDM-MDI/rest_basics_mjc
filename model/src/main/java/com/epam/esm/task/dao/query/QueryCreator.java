@@ -22,7 +22,7 @@ public class QueryCreator {
 
     public String update(String tableName, List<String> columns) {
         return "UPDATE " + tableName + " SET " + fillColumnQuestionMark(columns) +
-                " WHERE id = ?;";
+                " WHERE id = ? AND deleted = 0;";
     }
 
     public String insert(String tableName, List<String> columns) {
@@ -45,21 +45,24 @@ public class QueryCreator {
     }
 
     public String findAll(String tableName) {
-        return "SELECT * FROM " + tableName + ";";
+        return "SELECT * FROM " + tableName + " WHERE deleted = 0;";
     }
 
     public String findById(String tableName) {
-        return "SELECT * FROM " + tableName + " WHERE id = ?;";
+        return "SELECT * FROM " + tableName + " WHERE id = ? AND deleted = 0;";
     }
 
     public String findByParam(String tableName, Map<String,String> param) {
+        String order = param.get("order");
         StringBuilder result = new StringBuilder();
         result.append("SELECT * FROM ").append(tableName).append(" WHERE ");
         param.forEach((k,v) -> {
-            result.append(k).append("=").append('\'').append(v).append('\'').append(" AND ");
+            if(!k.equals("order"))
+                result.append(k).append("=").append('\'').append(v).append('\'').append(" AND ");
         });
-        result.delete(result.length()-4,result.length()-1);
-        return result.toString().trim() + ";";
+        result.append("deleted = 0");
+        if(order != null) result.append(" ORDER BY ").append(order);
+        return result.append(";").toString();
     }
 
     private String fillInsertQuestionMark(int count) {
@@ -90,5 +93,10 @@ public class QueryCreator {
             }
         }
         return result.toString();
+    }
+
+    public String findByColumn(String tableName, String columnName) {
+        return "SELECT * FROM " + tableName +
+                " WHERE " + columnName + " = ? AND deleted = 0;";
     }
 }

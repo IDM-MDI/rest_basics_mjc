@@ -18,10 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@Profile("test")
+@Profile("prod")
 public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements ManyToManyDao {
 
     private final String tableName = "gift_tag";
+    private final String giftId = "gift_id";
+    private final String tagId = "tag_id";
     private final List<String> tableColumns;
 
     @Autowired
@@ -36,13 +38,20 @@ public class ManyToManyDaoImpl extends AbstractDao<ManyToMany,Long> implements M
     }
 
     @Override
+    public List<ManyToMany> findByColumn(String columnName, String data) {
+        return jdbcTemplate.query(creator.findByColumn(tableName,columnName), new ManyToManyMapper(),data);
+    }
+
+    @Override
     public List<ManyToMany> findByGiftId(long id) {
-        return jdbcTemplate.query(EntityQuery.SELECT_BY_GIFT_ID_MTM,new ManyToManyMapper(),id);
+        return jdbcTemplate.query(creator.findByColumn(tableName,giftId),
+                new ManyToManyMapper(),id);
     }
 
     @Override
     public List<ManyToMany> findByTagId(long id) {
-        return jdbcTemplate.query(EntityQuery.SELECT_BY_TAG_ID_MTM,new ManyToManyMapper(),id);
+        return jdbcTemplate.query(creator.findByColumn(tableName,tagId),
+                new ManyToManyMapper(),id);
     }
 
     @Override

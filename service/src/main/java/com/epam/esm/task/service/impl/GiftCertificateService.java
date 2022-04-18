@@ -20,7 +20,7 @@ import java.util.Map;
 @Profile("prod")
 public class GiftCertificateService implements CustomService<GiftCertificateDto,Long> {
 
-    private final String tableName = "giftCertificate";
+    private final String tableName = "gift_certificate";
     private final GiftCertificateDaoImpl dao;
     private final List<String> giftCertificateColumns;
 
@@ -79,4 +79,5 @@ public class GiftCertificateService implements CustomService<GiftCertificateDto,
         Map<String,String> validParam = ParameterValidator.getValidMap(param,giftCertificateColumns);
         return GiftCertificateDto.toDtoList(dao.findByParam(validParam));
     }
+
 }

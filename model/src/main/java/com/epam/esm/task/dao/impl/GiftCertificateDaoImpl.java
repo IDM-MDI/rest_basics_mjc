@@ -2,7 +2,6 @@ package com.epam.esm.task.dao.impl;
 
 import com.epam.esm.task.builder.impl.GiftCertificateBuilder;
 import com.epam.esm.task.dao.AbstractDao;
-import com.epam.esm.task.dao.query.EntityQuery;
 import com.epam.esm.task.dao.GiftCertificateDao;
 import com.epam.esm.task.dao.mapper.GiftCertificateMapper;
 import com.epam.esm.task.dao.query.QueryCreator;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-@Profile("test")
+@Profile("prod")
 public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> implements GiftCertificateDao {
 
     private final String tableName = "gift_certificate";
@@ -125,6 +124,12 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate,Long> im
         } catch (DataAccessException e) {
             throw new DaoException(DAO_NOTHING_FIND_BY_ID.toString(),e);
         }
+    }
+
+    @Override
+    public List<GiftCertificate> findByColumn(String columnName, String data) {
+        String query = creator.findByColumn(tableName,columnName);
+        return jdbcTemplate.query(query,new GiftCertificateMapper(builder),data);
     }
 
     public List<GiftCertificate> findByParam(Map<String, String> validParam) {
